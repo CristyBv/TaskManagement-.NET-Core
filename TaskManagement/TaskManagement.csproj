@@ -1,0 +1,36 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <UserSecretsId>aspnet-TaskManagement-54B1152C-7F79-4802-B585-91720E5D3EB4</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Data\Migrations\20190903104529_Initial.cs" />
+    <Compile Remove="Data\Migrations\20190903104529_Initial.Designer.cs" />
+    <Compile Remove="Data\Migrations\20190903120505_Extend_IdentityUser.cs" />
+    <Compile Remove="Data\Migrations\20190903120505_Extend_IdentityUser.Designer.cs" />
+    <Compile Remove="Data\Migrations\20190903131521_Create-Models-Echipa-Proiect-Task-ExtentIdentity.cs" />
+    <Compile Remove="Data\Migrations\20190903131521_Create-Models-Echipa-Proiect-Task-ExtentIdentity.Designer.cs" />
+    <Compile Remove="Data\Migrations\20190903131919_Create-Models-Echipa-Proiect-Task-ExtentIdentity.cs" />
+    <Compile Remove="Data\Migrations\20190903131919_Create-Models-Echipa-Proiect-Task-ExtentIdentity.Designer.cs" />
+    <Compile Remove="Data\Migrations\20190903133537_Create-Models-Echipa-Proiect-Task-ExtentIdentity.cs" />
+    <Compile Remove="Data\Migrations\20190903133537_Create-Models-Echipa-Proiect-Task-ExtentIdentity.Designer.cs" />
+    <Compile Remove="Data\Migrations\20190903134152_InitialMigration.cs" />
+    <Compile Remove="Data\Migrations\20190903134152_InitialMigration.Designer.cs" />
+    <Compile Remove="Data\Migrations\20190903141023_InitialMigration.cs" />
+    <Compile Remove="Data\Migrations\20190903141023_InitialMigration.Designer.cs" />
+    <Compile Remove="Data\Migrations\20190904072112_test.cs" />
+    <Compile Remove="Data\Migrations\20190904072112_test.Designer.cs" />
+    <Compile Remove="Data\Migrations\20190904072316_test.cs" />
+    <Compile Remove="Data\Migrations\20190904072316_test.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.1.2" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.9" />
+    <PackageReference Include="System.Console" Version="4.3.1" />
+  </ItemGroup>
+
+</Project>
