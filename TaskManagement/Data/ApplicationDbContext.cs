@@ -18,6 +18,7 @@ namespace TaskManagement.Data
         public DbSet<Task> Tasks { get; set; }
         public DbSet<Project> Projects { get; set; }
         public DbSet<Team> Teams { get; set; }
+        public DbSet<TeamProject> TeamProjects { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -25,6 +26,10 @@ namespace TaskManagement.Data
 
             modelBuilder.Entity<ApplicationUser>(entity =>
             {
+                entity.HasOne(d => d.Team)
+                    .WithMany(d => d.Members)
+                    .HasForeignKey(d => d.IdTeam);
+
                 entity.HasMany(d => d.Tasks)
                     .WithOne(d => d.Member)
                     .HasForeignKey(d => d.IdMember);
@@ -59,9 +64,9 @@ namespace TaskManagement.Data
                     .WithOne(d => d.Project)
                     .HasForeignKey(d => d.IdProject);
 
-                entity.HasOne(d => d.Team)
-                    .WithMany(d => d.Projects)
-                    .HasForeignKey(d => d.IdTeam);
+                entity.HasMany(d => d.TeamProjects)
+                    .WithOne(d => d.Project)
+                    .HasForeignKey(d => d.IdProject);
             });
 
             modelBuilder.Entity<Team>(entity =>
@@ -72,9 +77,22 @@ namespace TaskManagement.Data
                     .WithOne(d => d.Team)
                     .HasForeignKey(d => d.IdTeam);
 
-                entity.HasMany(d => d.Projects)
+                entity.HasMany(d => d.TeamProjects)
                     .WithOne(d => d.Team)
                     .HasForeignKey(d => d.IdTeam);
+            });
+
+            modelBuilder.Entity<TeamProject>(entity =>
+            {
+                entity.ToTable("TeamProjects");
+
+                entity.HasOne(d => d.Team)
+                    .WithMany(d => d.TeamProjects)
+                    .HasForeignKey(d => d.IdTeam);
+
+                entity.HasOne(d => d.Project)
+                    .WithMany(d => d.TeamProjects)
+                    .HasForeignKey(d => d.IdProject);
             });
 
             // modelBuilder.ApplyConfiguration(new TaskConfiguration());

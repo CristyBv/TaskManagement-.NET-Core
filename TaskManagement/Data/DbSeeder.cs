@@ -18,13 +18,7 @@ namespace TaskManagement.Data
 
         private static void SeedUsers(UserManager<ApplicationUser> userManager)
         {
-           /* IdentityUser user = new IdentityUser
-            {
-                UserName = "cristybv1@gmail.com",
-                Email = "cristybv1@gmail.com",
-            };
-
-            userManager.CreateAsync(user, "exp112").Wait();*/
+            
         }
 
         private static void SeedTable1(ApplicationDbContext context)

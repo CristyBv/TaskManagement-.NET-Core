@@ -32,3 +32,4 @@ D:\Munca\TaskManagement\TaskManagement\obj\Debug\netcoreapp2.1\TaskManagement.Vi
 D:\Munca\TaskManagement\TaskManagement\obj\Debug\netcoreapp2.1\TaskManagement.dll
 D:\Munca\TaskManagement\TaskManagement\obj\Debug\netcoreapp2.1\TaskManagement.pdb
 D:\Munca\TaskManagement\TaskManagement\obj\Debug\netcoreapp2.1\TaskManagement.csproj.CopyComplete
+D:\Munca\TaskManagement\TaskManagement\obj\Debug\netcoreapp2.1\UserSecretsAssemblyInfo.cs

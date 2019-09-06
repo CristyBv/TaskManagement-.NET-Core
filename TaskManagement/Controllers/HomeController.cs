@@ -4,12 +4,22 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using TaskManagement.Data;
 using TaskManagement.Models;
 
 namespace TaskManagement.Controllers
 {
     public class HomeController : Controller
     {
+
+        private ApplicationDbContext context;
+
+        public HomeController(ApplicationDbContext context)
+        {
+            this.context = context;
+        }
+
         public IActionResult Index()
         {
             return View();

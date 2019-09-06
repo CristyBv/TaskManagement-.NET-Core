@@ -11,7 +11,7 @@ namespace TaskManagement.Models
 {
     public class ApplicationUser : IdentityUser
     {
-        public string IdTeam { get; set; }
+        public int? IdTeam { get; set; }
         public virtual Team Team { get; set; }
 
 

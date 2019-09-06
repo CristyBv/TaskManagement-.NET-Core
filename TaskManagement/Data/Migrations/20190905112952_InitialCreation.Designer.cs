@@ -10,8 +10,8 @@ using TaskManagement.Data;
 namespace TaskManagement.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190903141425_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20190905112952_InitialCreation")]
+    partial class InitialCreation
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -150,7 +150,7 @@ namespace TaskManagement.Data.Migrations
 
                     b.Property<bool>("EmailConfirmed");
 
-                    b.Property<string>("IdEchipa");
+                    b.Property<int?>("IdTeam");
 
                     b.Property<bool>("LockoutEnabled");
 
@@ -177,7 +177,7 @@ namespace TaskManagement.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("IdEchipa");
+                    b.HasIndex("IdTeam");
 
                     b.HasIndex("NormalizedEmail")
                         .HasName("EmailIndex");
@@ -190,46 +190,32 @@ namespace TaskManagement.Data.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
-            modelBuilder.Entity("TaskManagement.Models.Echipa", b =>
+            modelBuilder.Entity("TaskManagement.Models.Project", b =>
                 {
-                    b.Property<string>("IdEchipa")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("Name");
-
-                    b.HasKey("IdEchipa");
-
-                    b.ToTable("Echipe");
-                });
-
-            modelBuilder.Entity("TaskManagement.Models.Proiect", b =>
-                {
-                    b.Property<string>("IdProiect")
-                        .ValueGeneratedOnAdd();
+                    b.Property<int?>("IdProject")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Content");
 
                     b.Property<DateTime>("Deadline");
 
-                    b.Property<string>("IdEchipa");
-
                     b.Property<DateTime>("StartDate");
 
                     b.Property<string>("Status");
 
-                    b.Property<string>("Titlu");
+                    b.Property<string>("Title");
 
-                    b.HasKey("IdProiect");
+                    b.HasKey("IdProject");
 
-                    b.HasIndex("IdEchipa");
-
-                    b.ToTable("Proiecte");
+                    b.ToTable("Projects");
                 });
 
             modelBuilder.Entity("TaskManagement.Models.Task", b =>
                 {
-                    b.Property<string>("IdTask")
-                        .ValueGeneratedOnAdd();
+                    b.Property<int?>("IdTask")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Content");
 
@@ -237,27 +223,53 @@ namespace TaskManagement.Data.Migrations
 
                     b.Property<string>("IdCreator");
 
-                    b.Property<string>("IdMembru");
+                    b.Property<string>("IdMember");
 
-                    b.Property<string>("IdProiect");
+                    b.Property<int?>("IdProject");
 
-                    b.Property<int>("Prioritate");
+                    b.Property<int>("Priority");
 
                     b.Property<DateTime>("StartDate");
 
                     b.Property<string>("Status");
 
-                    b.Property<string>("Titlu");
+                    b.Property<string>("Title");
 
                     b.HasKey("IdTask");
 
                     b.HasIndex("IdCreator");
 
-                    b.HasIndex("IdMembru");
+                    b.HasIndex("IdMember");
 
-                    b.HasIndex("IdProiect");
+                    b.HasIndex("IdProject");
 
                     b.ToTable("Tasks");
+                });
+
+            modelBuilder.Entity("TaskManagement.Models.Team", b =>
+                {
+                    b.Property<int?>("IdTeam")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("IdTeam");
+
+                    b.ToTable("Teams");
+                });
+
+            modelBuilder.Entity("TaskManagement.Models.TeamProject", b =>
+                {
+                    b.Property<int>("IdTeam");
+
+                    b.Property<int>("IdProject");
+
+                    b.HasKey("IdTeam");
+
+                    b.HasIndex("IdProject");
+
+                    b.ToTable("TeamProjects");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -307,16 +319,9 @@ namespace TaskManagement.Data.Migrations
 
             modelBuilder.Entity("TaskManagement.Models.ApplicationUser", b =>
                 {
-                    b.HasOne("TaskManagement.Models.Echipa", "Echipa")
+                    b.HasOne("TaskManagement.Models.Team", "Team")
                         .WithMany("Members")
-                        .HasForeignKey("IdEchipa");
-                });
-
-            modelBuilder.Entity("TaskManagement.Models.Proiect", b =>
-                {
-                    b.HasOne("TaskManagement.Models.Echipa", "Echipa")
-                        .WithMany("Proiecte")
-                        .HasForeignKey("IdEchipa");
+                        .HasForeignKey("IdTeam");
                 });
 
             modelBuilder.Entity("TaskManagement.Models.Task", b =>
@@ -325,13 +330,26 @@ namespace TaskManagement.Data.Migrations
                         .WithMany("Creations")
                         .HasForeignKey("IdCreator");
 
-                    b.HasOne("TaskManagement.Models.ApplicationUser", "Membru")
+                    b.HasOne("TaskManagement.Models.ApplicationUser", "Member")
                         .WithMany("Tasks")
-                        .HasForeignKey("IdMembru");
+                        .HasForeignKey("IdMember");
 
-                    b.HasOne("TaskManagement.Models.Proiect", "Proiect")
+                    b.HasOne("TaskManagement.Models.Project", "Project")
                         .WithMany("Tasks")
-                        .HasForeignKey("IdProiect");
+                        .HasForeignKey("IdProject");
+                });
+
+            modelBuilder.Entity("TaskManagement.Models.TeamProject", b =>
+                {
+                    b.HasOne("TaskManagement.Models.Project", "Project")
+                        .WithMany("TeamProjects")
+                        .HasForeignKey("IdProject")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("TaskManagement.Models.Team", "Team")
+                        .WithMany("TeamProjects")
+                        .HasForeignKey("IdTeam")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }
