@@ -9,6 +9,7 @@ using TaskManagement.Data;
 using TaskManagement.DTOs;
 using TaskManagement.Mappers;
 using TaskManagement.Models;
+using TaskManagement.Repositories;
 
 namespace TaskManagement.Controllers
 {
@@ -16,21 +17,18 @@ namespace TaskManagement.Controllers
     [ApiController]
     public class TeamsController : ControllerBase
     {
-        private ApplicationDbContext context;
+        private readonly IRepository<Team, int> teamRepository;
 
-        public TeamsController(ApplicationDbContext context)
+        public TeamsController(IRepository<Team, int> teamRepository)
         {
-            this.context = context;
+            this.teamRepository = teamRepository;
         }
 
         // GET: api/Team
         [HttpGet]
         public IActionResult Get()
         {
-            var teamsList = context.Teams
-                .Include(t => t.Members)           
-                .Include(t => t.TeamProjects)           
-                .ToList();
+            var teamsList = teamRepository.GeTAll();
 
             List<TeamDTO> mappedTeams = new List<TeamDTO>();
             foreach (Team item in teamsList)
@@ -43,17 +41,9 @@ namespace TaskManagement.Controllers
 
         // GET: api/Team/5
         [HttpGet("{id}", Name = "GetTeams")]
-        public IActionResult Get(int? id)
+        public IActionResult Get(int id)
         {
-            if (id == null)
-            {
-                return BadRequest();
-            }
-
-            var team = context.Teams
-                .Include(t => t.Members)
-                .Include(t => t.TeamProjects)
-                .FirstOrDefault(t => t.IdTeam == id);
+            Team team = teamRepository.GetById(id);
 
             if (team == null)
             {
@@ -67,8 +57,8 @@ namespace TaskManagement.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] Team team)
         {
-            context.Add(team);
-            context.SaveChanges();
+            teamRepository.Insert(team);
+            teamRepository.Save();
             return Ok(team.ToDto());
         }
 
@@ -79,19 +69,23 @@ namespace TaskManagement.Controllers
             if (id == null || id != team.IdTeam)
             {
                 if (team.IdTeam == null)
+                {
+                    team.IdTeam = id;
+                }
+                else
+                {
                     return BadRequest();
-                return BadRequest();
+                }                
             }
 
             try
             {
-                context.Update(team);
-                context.SaveChanges();
-
+                teamRepository.Update(team);
+                teamRepository.Save();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!context.Teams.Any(p => p.IdTeam == id))
+                if (teamRepository.GetById(team.IdTeam.GetValueOrDefault()) == null)
                 {
                     return NotFound();
                 }
@@ -106,22 +100,14 @@ namespace TaskManagement.Controllers
 
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
-        public IActionResult Delete(int? id)
+        public IActionResult Delete(int id)
         {
-            if (id == null)
-            {
-                return BadRequest();
-            }
-
-            var team = context.Teams.Find(id);
-
-            if (team == null)
+            if(teamRepository.Delete(id) == -1)
             {
                 return NotFound();
             }
 
-            context.Remove(team);
-            context.SaveChanges();
+            teamRepository.Save();
             return Ok();
         }
     }

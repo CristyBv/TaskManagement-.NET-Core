@@ -10,6 +10,7 @@ using TaskManagement.Data;
 using TaskManagement.DTOs;
 using TaskManagement.Mappers;
 using TaskManagement.Models;
+using TaskManagement.Repositories;
 
 namespace TaskManagement.Controllers
 {
@@ -18,21 +19,18 @@ namespace TaskManagement.Controllers
     public class TeamProjectsController : ControllerBase
     {
 
-        private readonly ApplicationDbContext context;
+        private readonly IRepository<TeamProject, int> teamRepository;
 
-        public TeamProjectsController(ApplicationDbContext context)
+        public TeamProjectsController(IRepository<TeamProject, int> teamRepository)
         {
-            this.context = context;
+            this.teamRepository = teamRepository;
         }
 
         // GET: api/TeamProjects
         [HttpGet]
         public IActionResult Get()
         {
-            var teamProjectsList = context.TeamProjects
-                .Include(t => t.Team)
-                .Include(t => t.Project)
-                .ToList();
+            var teamProjectsList = teamRepository.GeTAll();
 
             List<TeamProjectDTO> mappedTeamProjects = new List<TeamProjectDTO>();
             foreach (TeamProject item in teamProjectsList)
@@ -45,17 +43,9 @@ namespace TaskManagement.Controllers
 
         // GET: api/TeamProjects/5
         [HttpGet("{id}", Name = "GetTeamProject")]
-        public IActionResult Get(int? id)
+        public IActionResult Get(int id)
         {
-            if(id == null)
-            {
-                return BadRequest();
-            }
-
-            var teamProject = context.TeamProjects
-                .Include(t => t.Team)
-                .Include(t => t.Project)
-                .FirstOrDefault(t => t.IdTeamProject == id);
+            TeamProject teamProject = teamRepository.GetById(id);
 
             if(teamProject == null)
             {
@@ -69,8 +59,8 @@ namespace TaskManagement.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] TeamProject teamProject)
         {
-            context.Add(teamProject);
-            context.SaveChanges();
+            teamRepository.Insert(teamProject);
+            teamRepository.Save();
             return Ok(teamProject.ToDto());
         }
 
@@ -81,18 +71,23 @@ namespace TaskManagement.Controllers
             if(id == null || id != teamProject.IdTeamProject)
             {
                 if (teamProject.IdTeamProject == null)
-                    return BadRequest();
-                return NotFound();
+                {
+                    teamProject.IdTeamProject = id;
+                }
+                else
+                {
+                    return NotFound();
+                }                
             }
 
             try
             {
-                context.Update(teamProject);
-                context.SaveChanges();
+                teamRepository.Update(teamProject);
+                teamRepository.Save();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!context.TeamProjects.Any(p => p.IdTeamProject == id))
+                if (teamRepository.GetById(teamProject.IdTeamProject.GetValueOrDefault()) == null)
                 {
                     return NotFound();
                 }
@@ -107,22 +102,14 @@ namespace TaskManagement.Controllers
 
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
-        public IActionResult Delete(int? id)
+        public IActionResult Delete(int id)
         {
-            if(id == null)
-            {
-                return BadRequest();
-            }
-
-            var teamProject = context.TeamProjects.Find(id);
-
-            if(teamProject == null)
+            if(teamRepository.Delete(id) == -1)
             {
                 return NotFound();
             }
 
-            context.Remove(teamProject);
-            context.SaveChanges();
+            teamRepository.Save();
             return Ok();
         }
     }

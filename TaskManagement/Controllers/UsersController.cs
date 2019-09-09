@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using TaskManagement.Data;
 using TaskManagement.DTOs;
 using TaskManagement.Models;
+using TaskManagement.Repositories;
 
 namespace TaskManagement.Controllers
 {
@@ -18,39 +19,28 @@ namespace TaskManagement.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-
-        private ApplicationDbContext context;
         private readonly IMapper mapper;
+        private readonly IRepository<ApplicationUser, string> userRepository;
 
-        public UsersController(ApplicationDbContext context, IMapper mapper)
+        public UsersController(IMapper mapper, IRepository<ApplicationUser, string> userRepository)
         {
-            this.context = context;
             this.mapper = mapper;
+            this.userRepository = userRepository;
         }
 
         // GET: api/Users
         [HttpGet]
         public IActionResult Get()
         {
-            List<ApplicationUser> usersList = context.Users
-                .Include(t => t.Team)
-                .ToList();
-
-            return Ok(mapper.Map<List<UserDTO>>(usersList));
+            List<UserDTO> mappedUsers = mapper.Map<List<UserDTO>>(userRepository.GeTAll());
+            return Ok(mappedUsers);
         }
 
         // GET: api/Users/5
         [HttpGet("{id}", Name = "GetUser")]
         public IActionResult Get(string id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var user = context.Users
-                .Include(t => t.Team)
-                .FirstOrDefault(t => t.Id == id);
+            var user = userRepository.GetById(id);
 
             if (user == null)
             {
@@ -60,40 +50,24 @@ namespace TaskManagement.Controllers
             return Ok(mapper.Map<UserDTO>(user));
         }
 
-        /*// POST: api/Users
-        [HttpPost]
-        public IActionResult Post([FromBody] ApplicationUser user)
-        {
-                
-        }*/
-
         // PUT: api/Users/5
         [HttpPut("team/{id}")]
         public IActionResult ChangeTeam(string id, [FromBody] ApplicationUser user)
         {
-            if(id == null)
-            {
-                return BadRequest();
-            }
-
-            var currentUser = context.Users.Find(id);
-
-            if(currentUser == null)
+            UserRepository userRepositoryChild = userRepository as UserRepository;
+            int result = userRepositoryChild.ChangeTeam(id, user);
+            if(result == -1)
             {
                 return NotFound();
             }
-
-            if(user.IdTeam == null)
+            else if(result == -2)
             {
                 return BadRequest();
             }
 
-            currentUser.IdTeam = user.IdTeam;
-
             try
             {
-                context.Update(currentUser);
-                context.SaveChanges();
+                userRepository.Save();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -103,10 +77,12 @@ namespace TaskManagement.Controllers
             return Ok(mapper.Map<UserDTO>(user));
         }
 
-        /* // DELETE: api/ApiWithActions/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        [HttpGet("sort/email/{order}")]
+        public IActionResult SortByEmail(bool order)
         {
-        }*/
+            UserRepository userRepositoryChild = userRepository as UserRepository;
+            var usersList = userRepositoryChild.SortByEmail(order);
+            return Ok(mapper.Map<List<UserDTO>>(usersList));
+        }
     }
 }

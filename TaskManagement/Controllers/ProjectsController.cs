@@ -9,6 +9,7 @@ using TaskManagement.Data;
 using TaskManagement.DTOs;
 using TaskManagement.Mappers;
 using TaskManagement.Models;
+using TaskManagement.Repositories;
 
 namespace TaskManagement.Controllers
 {
@@ -17,21 +18,18 @@ namespace TaskManagement.Controllers
     public class ProjectsController : ControllerBase
     {
 
-        private ApplicationDbContext context;
+         private readonly IRepository<Project, int> projectRepository;
 
-        public ProjectsController(ApplicationDbContext context)
+        public ProjectsController(IRepository<Project, int> projectRepository)
         {
-            this.context = context;
+            this.projectRepository = projectRepository;
         }
 
         // GET: api/Project
         [HttpGet]
         public IActionResult Get()
         {
-            var projectsList = context.Projects
-                .Include(t => t.Tasks)
-                .Include(t => t.TeamProjects)
-                .ToList();
+            var projectsList = projectRepository.GeTAll();
 
             List<ProjectDTO> mappedProjects = new List<ProjectDTO>();
             foreach (Project item in projectsList)
@@ -44,17 +42,9 @@ namespace TaskManagement.Controllers
 
         // GET: api/Project/5
         [HttpGet("{id}", Name = "GetProject")]
-        public IActionResult Get(int? id)
+        public IActionResult Get(int id)
         {
-            if (id == null)
-            {
-                return BadRequest();
-            }
-
-            var project = context.Projects
-                .Include(t => t.Tasks)
-                .Include(t => t.TeamProjects)
-                .FirstOrDefault(t => t.IdProject == id);
+            Project project = projectRepository.GetById(id);
 
             if (project == null)
             {
@@ -68,8 +58,8 @@ namespace TaskManagement.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] Project project)
         {
-            context.Add(project);
-            context.SaveChanges();
+            projectRepository.Insert(project);
+            projectRepository.Save();
             return Ok(project.ToDto());
         }
 
@@ -80,19 +70,24 @@ namespace TaskManagement.Controllers
             if (id == null || id != project.IdProject)
             {
                 if (project.IdProject == null)
+                {
+                    project.IdProject = id;
+                }
+                else
+                {
                     return BadRequest();
-                return BadRequest();
+                }                
             }
 
             try
             {
-                context.Update(project);
-                context.SaveChanges();
+                projectRepository.Update(project);
+                projectRepository.Save();
 
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!context.Projects.Any(p => p.IdProject == id))
+                if (projectRepository.GetById(project.IdProject.GetValueOrDefault()) == null)
                 {
                     return NotFound();
                 }
@@ -107,22 +102,14 @@ namespace TaskManagement.Controllers
 
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
-        public IActionResult Delete(int? id)
+        public IActionResult Delete(int id)
         {
-            if (id == null)
-            {
-                return BadRequest();
-            }
-
-            var project = context.Projects.Find(id);
-
-            if (project == null)
+            if(projectRepository.Delete(id) == -1)
             {
                 return NotFound();
             }
 
-            context.Remove(project);
-            context.SaveChanges();
+            projectRepository.Save();
             return Ok();
         }
     }

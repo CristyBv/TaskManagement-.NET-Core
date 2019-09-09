@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Hosting;
@@ -15,6 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using TaskManagement.Models;
 using AutoMapper;
 using TaskManagement.DTOs;
+using TaskManagement.Repositories;
 
 namespace TaskManagement
 {
@@ -51,6 +51,12 @@ namespace TaskManagement
 
             IMapper mapper = mappingConfig.CreateMapper();
             services.AddSingleton(mapper);
+
+            services.AddScoped<IRepository<Task, int>, TaskRepository>();
+            services.AddScoped<IRepository<ApplicationUser, string>, UserRepository>();
+            services.AddScoped<IRepository<Project, int>, ProjectRepository>();
+            services.AddScoped<IRepository<Team, int>, TeamRepository>();
+            services.AddScoped<IRepository<TeamProject, int>, TeamProjectRepository>();
 
             services.AddMvc()
                 .AddJsonOptions(x => x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore)

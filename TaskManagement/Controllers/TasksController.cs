@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using TaskManagement.Data;
 using TaskManagement.DTOs;
 using TaskManagement.Models;
+using TaskManagement.Repositories;
 using FromBodyAttribute = Microsoft.AspNetCore.Mvc.FromBodyAttribute;
 using HttpDeleteAttribute = Microsoft.AspNetCore.Mvc.HttpDeleteAttribute;
 using HttpGetAttribute = Microsoft.AspNetCore.Mvc.HttpGetAttribute;
@@ -22,46 +23,28 @@ namespace TaskManagement.Controllers
     [ApiController]
     public class TasksController : ControllerBase
     {
-
-        private ApplicationDbContext context;
         private readonly IMapper mapper;
+        private readonly IRepository<Task, int> taskRepository;
 
-        public TasksController(ApplicationDbContext context, IMapper mapper)
+        public TasksController(IMapper mapper, IRepository<Task, int> repository)
         {
-            this.context = context;
             this.mapper = mapper;
+            this.taskRepository = repository;
         }
 
         // GET: api/Task
         [HttpGet]
         public IActionResult GetTasks()
-        {
-            var tasksList = context.Tasks
-                .Include(t => t.Creator)
-                .ThenInclude(t => t.Team)
-                .Include(t => t.Member)
-                .ThenInclude(t => t.Team)
-                .Include(t => t.Project)
-                .ToList();
-
-            List<TaskDTO> mappedTasks = mapper.Map<List<TaskDTO>>(tasksList);
+        {         
+            List<TaskDTO> mappedTasks = mapper.Map<List<TaskDTO>>(taskRepository.GeTAll());
             return Ok(mappedTasks);
         }
 
         // GET: api/Task/5
         [HttpGet("{id}", Name = "GetTask")]
-        public IActionResult GetTask(int? id)
+        public IActionResult GetTask(int id)
         {
-            if (id == null)
-            {
-                return BadRequest();
-            }                
-
-            var task = context.Tasks
-                .Include(t => t.Creator)
-                .Include(t => t.Member)
-                .Include(t => t.Project)
-                .FirstOrDefault(t => t.IdTask == id);
+            Task task = taskRepository.GetById(id);
 
             if(task == null)
             {
@@ -75,8 +58,8 @@ namespace TaskManagement.Controllers
         [HttpPost]
         public IActionResult Create([FromBody] Task task)
         {
-            context.Add(task);
-            context.SaveChanges();
+            taskRepository.Insert(task);
+            taskRepository.Save();
             return Ok(mapper.Map<TaskDTO>(task));
         }
 
@@ -87,18 +70,23 @@ namespace TaskManagement.Controllers
             if(id == null || id != task.IdTask)
             {
                 if (task.IdTask == null)
+                {
+                    task.IdTask = id;
+                }
+                else
+                {
                     return BadRequest();
-                return BadRequest();
+                }                
             }
 
             try
             {
-                context.Update(task);
-                context.SaveChanges();
+                taskRepository.Update(task);
+                taskRepository.Save();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if(!context.Tasks.Any(p => p.IdTask == id))
+                if(taskRepository.GetById(task.IdTask.GetValueOrDefault()) == null)
                 {
                     return NotFound();
                 }
@@ -114,22 +102,15 @@ namespace TaskManagement.Controllers
 
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
-        public IActionResult Delete(int? id)
+        public IActionResult Delete(int id)
         {
-            if(id == null)
-            {
-                return BadRequest();
-            }
-
-            var task = context.Tasks.Find(id);
-
-            if(task == null)
+            if(taskRepository.Delete(id) == -1)
             {
                 return NotFound();
             }
 
-            context.Remove(task);
-            context.SaveChanges();
+            taskRepository.Save();
+
             return Ok();
         }
     }

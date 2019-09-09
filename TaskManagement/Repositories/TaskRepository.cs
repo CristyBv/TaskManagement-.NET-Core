@@ -1,42 +1,66 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using TaskManagement.Data;
+using TaskManagement.Models;
 
 namespace TaskManagement.Repositories
 {
-    public class TaskRepository : IRepository
+    public class TaskRepository : IRepository<Task, int>
     {
         private readonly ApplicationDbContext context;
 
-        public TaskRepository()
+        public TaskRepository(ApplicationDbContext context)
         {
-            
+            this.context = context;
         }
 
-        public void Delete(Task task)
+        public int Delete(int Id)
         {
-            throw new NotImplementedException();
+            Task task = context.Tasks.Find(Id);
+            if(task == null)
+            {
+                return -1;
+            }
+            context.Tasks.Remove(task);
+            return 1;
         }
 
         public IEnumerable<Task> GeTAll()
         {
-            throw new NotImplementedException();
+            return context.Tasks
+                .Include(t => t.Creator)
+                .ThenInclude(t => t.Team)
+                .Include(t => t.Member)
+                .ThenInclude(t => t.Team)
+                .Include(t => t.Project)
+                .ToList();
         }
 
-        public Task GetById(int IdTask)
+        public Task GetById(int Id)
         {
-            throw new NotImplementedException();
+            return context.Tasks
+                .Include(t => t.Creator)
+                .ThenInclude(t => t.Team)
+                .Include(t => t.Member)
+                .ThenInclude(t => t.Team)
+                .Include(t => t.Project)
+                .FirstOrDefault(t => t.IdTask == Id);
         }
 
-        public void Insert(Task task)
+        public void Insert(Task entity)
         {
-            throw new NotImplementedException();
+            context.Tasks.Add(entity);
         }
 
         public void Save()
         {
-            throw new NotImplementedException();
+            context.SaveChanges();
+        }
+
+        public void Update(Task entity)
+        {
+             context.Tasks.Update(entity);            
         }
     }
+}

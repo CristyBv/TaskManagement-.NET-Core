@@ -12,7 +12,7 @@ namespace TaskManagement.Models
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
-        public int IdTeamProject { get; set; }
+        public int? IdTeamProject { get; set; }
         public int IdTeam { get; set; }
         public Team Team { get; set; }
         public int IdProject { get; set; }

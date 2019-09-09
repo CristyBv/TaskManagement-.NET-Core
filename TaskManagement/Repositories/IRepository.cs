@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using TaskManagement.Models;
 
 namespace TaskManagement.Repositories
 {
-    public interface IRepository
+    public interface IRepository<T,K>
     {
-        IEnumerable<Task> GeTAll();
-        Task GetById(int IdTask);
-        void Insert(Task task);
-        void Delete(Task task);
+        IEnumerable<T> GeTAll();
+        T GetById(K Id);
+        void Insert(T entity);
+        void Update(T entity);
+        int Delete(K Id);
         void Save();
     }
 }
