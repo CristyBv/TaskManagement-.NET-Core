@@ -72,7 +72,7 @@ namespace TaskManagement.Repositories
             return 1;
         }
 
-        public virtual IEnumerable<ApplicationUser> SortByEmail(bool desc)
+        internal virtual IEnumerable<ApplicationUser> SortByEmail(bool desc)
         {
             if(desc)
             {
@@ -82,6 +82,18 @@ namespace TaskManagement.Repositories
             {
                 return this.GeTAll().OrderBy(t => t.Email);
             }            
+        }
+
+        internal virtual IEnumerable<ApplicationUser> SortByUserName(bool desc)
+        {
+            if (desc)
+            {
+                return this.GeTAll().OrderByDescending(t => t.UserName);
+            }
+            else
+            {
+                return this.GeTAll().OrderBy(t => t.UserName);
+            }
         }
     }
 }
