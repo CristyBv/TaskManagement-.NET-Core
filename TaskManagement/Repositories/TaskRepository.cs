@@ -13,7 +13,7 @@ namespace TaskManagement.Repositories
         {
         }
 
-        public IEnumerable<Task> GeTAll()
+        /*public IEnumerable<Task> GeTAll()
         {
             return context.Tasks
                 .Include(t => t.Creator)
@@ -22,7 +22,7 @@ namespace TaskManagement.Repositories
                 .ThenInclude(t => t.Team)
                 .Include(t => t.Project)
                 .ToList();
-        }
+        }*/
 
         public Task GetById(int Id)
         {

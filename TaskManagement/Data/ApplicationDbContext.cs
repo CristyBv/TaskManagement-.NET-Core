@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -18,7 +19,6 @@ namespace TaskManagement.Data
         public DbSet<Task> Tasks { get; set; }
         public DbSet<Project> Projects { get; set; }
         public DbSet<Team> Teams { get; set; }
-
         public DbSet<TeamProject> TeamProjects { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -95,9 +95,6 @@ namespace TaskManagement.Data
                     .WithMany(d => d.TeamProjects)
                     .HasForeignKey(d => d.IdProject);
             });
-
-            // modelBuilder.ApplyConfiguration(new TaskConfiguration());
-            // modelBuilder.ApplyConfiguration(new ApplicationUserConfiguration());
         }
     }
 }

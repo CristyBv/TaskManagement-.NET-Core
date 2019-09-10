@@ -44,5 +44,18 @@ namespace TaskManagement.Repositories
             context.Remove(entity);
             return 1;
         }
+
+        public virtual IEnumerable<T> GeTAll()
+        {
+            /*var type = typeof(IQueryable<T>).MakeGenericType(objectType);
+
+            var query = (IQueryable<T>)Activator.CreateInstance(type);
+            
+            query = (IQueryable<T>) context.Query(type);*/
+
+
+
+            return (IEnumerable<T>) context.Set(objectType);
+        }
     }
 }

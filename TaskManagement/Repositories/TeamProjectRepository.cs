@@ -8,24 +8,11 @@ using TaskManagement.Models;
 
 namespace TaskManagement.Repositories
 {
-    public class TeamProjectRepository : IRepository<TeamProject, int>
+    public class TeamProjectRepository : RepositoryBase<TeamProject, int>, IRepository<TeamProject, int>
     {
-        private readonly ApplicationDbContext context;
 
-        public TeamProjectRepository(ApplicationDbContext context)
+        public TeamProjectRepository(ApplicationDbContext context) : base(context, typeof(TeamProject))
         {
-            this.context = context;
-        }
-
-        public int Delete(int Id)
-        {
-            TeamProject teamProject = context.TeamProjects.Find(Id);
-            if (teamProject == null)
-            {
-                return -1;
-            }
-            context.TeamProjects.Remove(teamProject);
-            return 1;
         }
 
         public IEnumerable<TeamProject> GeTAll()
@@ -42,21 +29,6 @@ namespace TaskManagement.Repositories
                 .Include(t => t.Team)
                 .Include(t => t.Project)
                 .FirstOrDefault(t => t.IdTeamProject == Id);
-        }
-
-        public void Insert(TeamProject entity)
-        {
-            context.TeamProjects.Add(entity);
-        }
-
-        public void Save()
-        {
-            context.SaveChanges();
-        }
-
-        public void Update(TeamProject entity)
-        {
-            context.TeamProjects.Update(entity);
         }
     }
 }
