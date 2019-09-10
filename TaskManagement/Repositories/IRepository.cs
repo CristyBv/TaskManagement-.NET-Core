@@ -7,7 +7,7 @@ namespace TaskManagement.Repositories
 {
     public interface IRepository<T,K>
     {
-        IEnumerable<T> GeTAll();
+        IQueryable<object> GeTAll();
         T GetById(K Id);
         void Insert(T entity);
         void Update(T entity);

@@ -15,17 +15,16 @@ namespace TaskManagement.Repositories
         {
         }
 
-        public IEnumerable<TeamProject> GeTAll()
+        public override IQueryable<object> GeTAll()
         {
-            return context.TeamProjects
+            return ((IQueryable<TeamProject>)base.GeTAll())
                 .Include(t => t.Team)
-                .Include(t => t.Project)
-                .ToList();
+                .Include(t => t.Project);
         }
 
         public TeamProject GetById(int Id)
         {
-            return context.TeamProjects
+            return ((IQueryable<TeamProject>)base.GeTAll())
                 .Include(t => t.Team)
                 .Include(t => t.Project)
                 .FirstOrDefault(t => t.IdTeamProject == Id);

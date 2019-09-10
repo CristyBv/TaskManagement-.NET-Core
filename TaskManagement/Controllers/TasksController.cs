@@ -117,7 +117,7 @@ namespace TaskManagement.Controllers
         [HttpPost("filter")]
         public IActionResult Filter([FromBody] FilterDTO filter)
         {
-            IEnumerable<Task> tasks = taskRepository.GeTAll();
+            IEnumerable<Task> tasks = (IEnumerable<Task>) taskRepository.GeTAll();
             int TotalItems = tasks.Count();
 
             if (filter.Sort != null)

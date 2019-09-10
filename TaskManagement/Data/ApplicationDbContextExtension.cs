@@ -6,17 +6,17 @@ using System.Threading.Tasks;
 
 namespace TaskManagement.Data
 {
-    public static partial class ApplicationDbContextExtension
+    public static class ApplicationDbContextExtension
     {
-        public static IQueryable Query(this ApplicationDbContext context, string entityName) =>
-            context.Query(context.Model.FindEntityType(entityName).ClrType);
+        public static IQueryable Set(this ApplicationDbContext context, string entityName) =>
+            context.Set(context.Model.FindEntityType(entityName).ClrType);
 
-        public static IQueryable<object> Query(this ApplicationDbContext context, Type entityType) =>
-            (IQueryable<object>)((IDbSetCache)context).GetOrAddSet(context.GetDependencies().SetSource, entityType);
+        /*public static IQueryable<object> Query(this ApplicationDbContext context, Type entityType) =>
+            (IQueryable<object>)((IDbSetCache)context).GetOrAddSet(context.GetDependencies().SetSource, entityType);*/
 
-        public static IQueryable<object> Set(this ApplicationDbContext _context, Type t)
+        public static IQueryable<object> Set(this ApplicationDbContext context, Type entityType)
         {
-            return (IQueryable<object>)_context.GetType().GetMethod("Set").MakeGenericMethod(t).Invoke(_context, null);
+            return (IQueryable<object>)context.GetType().GetMethod("Set").MakeGenericMethod(entityType).Invoke(context, null);
         }
     }
 }

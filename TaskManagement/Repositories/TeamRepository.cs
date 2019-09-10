@@ -15,12 +15,11 @@ namespace TaskManagement.Repositories
         {
         }
 
-        public IEnumerable<Team> GeTAll()
+        public override IQueryable<object> GeTAll()
         {
-            return context.Teams
+            return ((IQueryable<Team>)base.GeTAll())
                 .Include(t => t.Members)
-                .Include(t => t.TeamProjects)
-                .ToList();
+                .Include(t => t.TeamProjects);
         }
 
         public Team GetById(int Id)

@@ -20,11 +20,10 @@ namespace TaskManagement.Repositories
             throw new NotImplementedException();
         }
 
-        public IEnumerable<ApplicationUser> GeTAll()
+        public override IQueryable<object> GeTAll()
         {
-            return context.Users
-                .Include(t => t.Team)
-                .ToList();
+            return ((IQueryable<ApplicationUser>)base.GeTAll())
+                .Include(t => t.Team);
         }
 
         public ApplicationUser GetById(string Id)

@@ -13,20 +13,19 @@ namespace TaskManagement.Repositories
         {
         }
 
-        /*public IEnumerable<Task> GeTAll()
+        public override IQueryable<object> GeTAll()
         {
-            return context.Tasks
+            return ((IQueryable<Task>)base.GeTAll())
                 .Include(t => t.Creator)
                 .ThenInclude(t => t.Team)
                 .Include(t => t.Member)
                 .ThenInclude(t => t.Team)
-                .Include(t => t.Project)
-                .ToList();
-        }*/
+                .Include(t => t.Project);
+        }
 
         public Task GetById(int Id)
         {
-            return context.Tasks
+            return ((IQueryable<Task>)base.GeTAll())
                 .Include(t => t.Creator)
                 .ThenInclude(t => t.Team)
                 .Include(t => t.Member)

@@ -15,12 +15,11 @@ namespace TaskManagement.Repositories
         {
         }
 
-        public IEnumerable<Project> GeTAll()
+        public override IQueryable<object> GeTAll()
         {
-            return context.Projects
+            return ((IQueryable<Project>)base.GeTAll())
                 .Include(t => t.Tasks)
-                .Include(t => t.TeamProjects)
-                .ToList();
+                .Include(t => t.TeamProjects);
         }
 
         public Project GetById(int Id)
