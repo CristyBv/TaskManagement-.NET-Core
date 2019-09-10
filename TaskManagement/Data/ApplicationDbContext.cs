@@ -18,6 +18,7 @@ namespace TaskManagement.Data
         public DbSet<Task> Tasks { get; set; }
         public DbSet<Project> Projects { get; set; }
         public DbSet<Team> Teams { get; set; }
+
         public DbSet<TeamProject> TeamProjects { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
