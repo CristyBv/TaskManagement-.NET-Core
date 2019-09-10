@@ -8,17 +8,14 @@ using TaskManagement.Models;
 
 namespace TaskManagement.Repositories
 {
-    public class UserRepository : IRepository<ApplicationUser, string>
+    public class UserRepository : RepositoryBase<ApplicationUser, string>, IRepository<ApplicationUser, string>
     {
 
-        private readonly ApplicationDbContext context;
-
-        public UserRepository(ApplicationDbContext context)
+        public UserRepository(ApplicationDbContext context) : base(context, typeof(ApplicationUser))
         {
-            this.context = context;
         }
 
-        public int Delete(string Id)
+        public override int Delete(string Id)
         {
             throw new NotImplementedException();
         }
@@ -37,17 +34,12 @@ namespace TaskManagement.Repositories
                 .FirstOrDefault(t => t.Id == Id);
         }
 
-        public void Insert(ApplicationUser entity)
+        public override void Insert(ApplicationUser entity)
         {
             throw new NotImplementedException();
         }
 
-        public void Save()
-        {
-            context.SaveChanges();
-        }
-
-        public void Update(ApplicationUser entity)
+        public override void Update(ApplicationUser entity)
         {
             throw new NotImplementedException();
         }
@@ -70,30 +62,6 @@ namespace TaskManagement.Repositories
             context.Update(user);
 
             return 1;
-        }
-
-        internal virtual IEnumerable<ApplicationUser> SortByEmail(bool desc)
-        {
-            if(desc)
-            {
-                return this.GeTAll().OrderByDescending(t => t.Email);
-            }
-            else
-            {
-                return this.GeTAll().OrderBy(t => t.Email);
-            }            
-        }
-
-        internal virtual IEnumerable<ApplicationUser> SortByUserName(bool desc)
-        {
-            if (desc)
-            {
-                return this.GeTAll().OrderByDescending(t => t.UserName);
-            }
-            else
-            {
-                return this.GeTAll().OrderBy(t => t.UserName);
-            }
         }
     }
 }

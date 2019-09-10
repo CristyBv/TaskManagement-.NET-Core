@@ -19,22 +19,22 @@ namespace TaskManagement.Repositories
             this.objectType = type;
         }
 
-        public void Insert(T entity)
+        public virtual void Insert(T entity)
         {
             context.Add(entity);
         }
 
-        public void Save()
+        public virtual void Save()
         {
             context.SaveChanges();
         }
 
-        public void Update(T entity)
+        public virtual void Update(T entity)
         {
             context.Update(entity);
         }
 
-        public int Delete(K Id)
+        public virtual int Delete(K Id)
         {
             object entity = context.Find(objectType, Id);
             if (entity == null)

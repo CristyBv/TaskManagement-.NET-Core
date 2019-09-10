@@ -76,21 +76,5 @@ namespace TaskManagement.Controllers
 
             return Ok(mapper.Map<UserDTO>(user));
         }
-
-        [HttpGet("sort/email/{order}")]
-        public IActionResult SortByEmail(bool order)
-        {
-            UserRepository userRepositoryChild = userRepository as UserRepository;
-            var usersList = userRepositoryChild.SortByEmail(order);
-            return Ok(mapper.Map<List<UserDTO>>(usersList));
-        }
-
-        [HttpGet("sort/username/{order}")]
-        public IActionResult SortByUserName(bool order)
-        {
-            UserRepository userRepositoryChild = userRepository as UserRepository;
-            var usersList = userRepositoryChild.SortByUserName(order);
-            return Ok(mapper.Map<List<UserDTO>>(usersList));
-        }
     }
 }
