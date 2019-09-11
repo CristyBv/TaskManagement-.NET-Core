@@ -20,6 +20,7 @@ namespace TaskManagement.Data
         public DbSet<Project> Projects { get; set; }
         public DbSet<Team> Teams { get; set; }
         public DbSet<TeamProject> TeamProjects { get; set; }
+        public DbSet<UserOAuth> UsersOAuth { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

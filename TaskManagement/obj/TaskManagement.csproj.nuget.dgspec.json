@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Munca\\TaskManagement\\TaskManagement\\TaskManagement.csproj": {}
+    "C:\\CST\\Projects\\TaskManagement-.NET-Core\\TaskManagement\\TaskManagement.csproj": {}
   },
   "projects": {
-    "D:\\Munca\\TaskManagement\\TaskManagement\\TaskManagement.csproj": {
+    "C:\\CST\\Projects\\TaskManagement-.NET-Core\\TaskManagement\\TaskManagement.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Munca\\TaskManagement\\TaskManagement\\TaskManagement.csproj",
+        "projectUniqueName": "C:\\CST\\Projects\\TaskManagement-.NET-Core\\TaskManagement\\TaskManagement.csproj",
         "projectName": "TaskManagement",
-        "projectPath": "D:\\Munca\\TaskManagement\\TaskManagement\\TaskManagement.csproj",
-        "packagesPath": "C:\\Users\\CristyBv\\.nuget\\packages\\",
-        "outputPath": "D:\\Munca\\TaskManagement\\TaskManagement\\obj\\",
+        "projectPath": "C:\\CST\\Projects\\TaskManagement-.NET-Core\\TaskManagement\\TaskManagement.csproj",
+        "packagesPath": "C:\\Users\\crist\\.nuget\\packages\\",
+        "outputPath": "C:\\CST\\Projects\\TaskManagement-.NET-Core\\TaskManagement\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\CristyBv\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\crist\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -69,6 +69,7 @@
               "version": "[2.1.2, )"
             },
             "Microsoft.NETCore.App": {
+              "suppressParent": "All",
               "target": "Package",
               "version": "[2.1.0, )",
               "autoReferenced": true
